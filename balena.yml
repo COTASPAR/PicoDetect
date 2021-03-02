@@ -1,0 +1,18 @@
+name: "PicoDetect"
+description: "Turn an LED on when a person is seen by the Pico."
+type: "sw.application"
+assets:
+  repository:
+    type: "blob.asset"
+    data:
+      url: "https://github.com/COTASPAR/PicoDetect"
+  logo:
+    type: "blob.asset"
+    data:
+      url: "https://raw.githubusercontent.com/COTASPAR/PicoDetect/master/arm_logo.png"    
+data:
+  applicationEnvironmentVariables:
+    - ACTIVE_PIN: 15
+  defaultDeviceType: "raspberrypi4-64"
+  supportedDeviceTypes:
+    - "raspberrypi4-64"
