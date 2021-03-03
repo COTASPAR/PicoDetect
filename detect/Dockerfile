@@ -34,7 +34,7 @@ RUN cmake ..
 
 RUN make
 
-echo "great, the PicoDetect example is ready, rebooting in 5 seconds."
+RUN echo "great, the PicoDetect example is ready, rebooting in 5 seconds."
 
 RUN sleep 10 
 
