@@ -1,42 +1,27 @@
-# setting up RaspberryPi 4 for use with Pico
-FROM balenalib/raspberrypi4-64-ubuntu:latest
+# setting up RaspberryPi 3 for use with Pico
+FROM balenalib/rpi-raspbian:latest
 
 # Update
 RUN apt-get update
 
 # Install basics
-RUN apt-get install -y git 
+RUN apt-get install -y git cmake python3-dev gcc-arm-none-eabi build-essential libnewlib-arm-none-eabi libstdc++-arm-none-eabi-newlib pkg-config libasound2
 
 # Make folder where to store project
 RUN mkdir /pico_detect
 
 WORKDIR /pico_detect
 
-# Get pico setup script from Raspberry Pi
+# We need to override the 64-bit vscode.deb check (for now), and stay with 32-bit.  So we end up overwriting theirs with our own.
 RUN git clone https://github.com/raspberrypi/pico-setup.git
-
-# running the setup script 
-RUN chmod +x pico-setup/pico_setup.sh
+COPY pico_setup.sh pico-setup/pico_setup.sh
+RUN chmod +x pico-setup/pico_setup.sh && cd pico-setup && /bin/bash -e pico_setup.sh
 
 # get drivers from ArduCAM and building tflite example from source
 RUN git clone https://github.com/ArduCAM/RPI-Pico-Cam.git
 
-RUN cd RPI-Pico-Cam/tflmicro
+RUN export PICO_SDK_PATH=/pico_detect/pico-setup/pico/pico-sdk && cd RPI-Pico-Cam/tflmicro && mkdir build && cd build && cmake .. && make
 
-RUN mkdir build 
+RUN echo "Great, the PicoDetect example is ready."
 
-RUN cd build 
-
-# ensuring we have cmake 
-RUN snap install cmake
-
-RUN cmake ..
-
-RUN make
-
-RUN echo "great, the PicoDetect example is ready, rebooting in 5 seconds."
-
-RUN sleep 10 
-
-#sudo reboot at the end for changes to take effect
-RUN reboot
+CMD /bin/bash
